@@ -5,15 +5,13 @@ from pycaw.pycaw import AudioUtilities, IAudioEndpointVolume
 from ctypes import cast, POINTER
 from comtypes import CLSCTX_ALL
 
-# Initialize MediaPipe hands model
 mp_hands = mp.solutions.hands 
 hands = mp_hands.Hands()
 mp_drawing = mp.solutions.drawing_utils
 
-# Initialize webcam
+
 cap = cv2.VideoCapture(0)
 
-# Pycaw setup for controlling volume
 devices = AudioUtilities.GetSpeakers()
 interface = devices.Activate(IAudioEndpointVolume._iid_, CLSCTX_ALL, None)
 volume = cast(interface, POINTER(IAudioEndpointVolume))
@@ -44,11 +42,10 @@ while True:
 
         length = np.hypot(x2 - x1, y2 - y1)
 
-        # Convert the length to volume level
+
         vol = np.interp(length, [50, 300], [min_vol, max_vol])
         volume.SetMasterVolumeLevel(vol, None)
 
-        # Add volume level display on the screen
         cv2.putText(img, f'Vol: {int(vol)}', (40, 50), cv2.FONT_HERSHEY_COMPLEX, 1, (255, 0, 0), 3)
 
     cv2.imshow('Volume Control', img)
